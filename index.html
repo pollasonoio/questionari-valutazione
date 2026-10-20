@@ -797,8 +797,11 @@ function labelOf(q, ans, id) {
   return keys.map(k => (e.b.opzioni.find(o => o.k === k) || { t: k }).t).join("; ");
 }
 function itemText(q, id) { const e = indexItems(q)[id]; return e ? (e.it.testo || e.b.sottoclasse || id) : id; }
+// il referto non mostra mai la dicitura "provvisorio" (resta solo nel catalogo dell'app)
+const senzaProvv = t => t.replace(/\s*[–-]\s*versione provvisoria/gi, "").replace(/\s*\(provvisori[oa]\)/gi, "")
+  .replace(/^PROVVISORIO\s*[–-]\s*(.)/, (_, c) => c.toUpperCase()).replace(/^Versione provvisoria:/, "Nota:");
 function base(q, ans, meta) {
-  return { id: q.id, titolo: q.titolo, breve: q.breve, fonte: q.fonte_ref || FONTE[q.id] || "",
+  return { id: q.id, titolo: senzaProvv(q.titolo), breve: senzaProvv(q.breve), fonte: senzaProvv(q.fonte_ref || FONTE[q.id] || ""),
     paziente: (meta.NOME || "").trim(), data: (meta.DATA || "").trim(), extra: meta.extra || [],
     completo: true, mancanti: [], principali: [], grafici: [], interpretazione: [], riferimento: null, dettagli: [], avvisi: [] };
 }
@@ -952,7 +955,7 @@ function calcGenerico(q, ans, meta) {
   const rng = id => { const vs = idx[id].b.opzioni.map(o => o.v); if (P.vuoto_zero) vs.push(0); return [Math.min(...vs), Math.max(...vs)]; };
   const score = id => { const v = val(q, ans, id); if (v === null) return null;
     if ((P.invertiti || []).includes(id)) { const [lo, hi] = rng(id); return lo + hi - v; } return v; };
-  if (P.avviso) r.avvisi.push(P.avviso);
+  if (P.avviso) r.avvisi.push(senzaProvv(P.avviso));
   const x = {}, tutti = [...new Set([...P.items, ...(P.sottoscale || []).flatMap(sc => sc.items)])];
   tutti.forEach(id => {
     let s = score(id); if (s === null && P.vuoto_zero) s = 0;
