@@ -51,7 +51,7 @@ th,td{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertic
 .scale{display:flex;flex-wrap:wrap;gap:4px}
 .scale label{display:inline-flex;flex-direction:column;align-items:center;min-width:40px;border:1px solid var(--line);border-radius:6px;padding:2px 4px;cursor:pointer;font-size:13px}
 .scale input{margin:2px}
-.ancn{display:none}
+.ancn,.ancmin{display:none}
 .anc{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:var(--muted);max-width:640px}
 .opts label{display:block;padding:2px 0;cursor:pointer}
 .grid td,.grid th{text-align:center}
@@ -112,7 +112,10 @@ select{max-width:100%}
   .scale{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:2px}
   .scale label{position:relative;min-width:0;padding:10px 0;font-size:15px;font-weight:700;letter-spacing:-.3px}
   .scale input{position:absolute;opacity:0;pointer-events:none}
-  .anc{flex-direction:column;gap:2px;font-size:13px}
+  .ancmin,.anc{font-size:13.5px;color:var(--ink)}
+  .ancmin{display:block;margin-bottom:4px}
+  .anc{display:block;margin-top:4px}
+  .anc>span:first-child{display:none}
   .ancn{display:inline}
   button,a.btn{padding:10px 14px}
   .row label{flex:1 1 100%}
@@ -168,7 +171,7 @@ function formHtml(q, meta, ans) {
       else if (b.tipo === "check") h += `<div class="opts">${b.opzioni.map(o => `<label><input type="checkbox" name="${it.id}" value="${o.k}" ${(ans[it.id] || []).includes(o.k) ? "checked" : ""}> ${esc(o.t)}</label>`).join("")}</div>`;
       else if (b.layout === "riga") {
         const a = it.ancore || b.ancore || ["", ""];
-        h += `<div class="scale">${b.opzioni.map(o => `<label><span>${esc(o.t)}</span><input type="radio" name="${it.id}" value="${o.k}" ${ans[it.id] === o.k ? "checked" : ""}></label>`).join("")}</div><div class="anc"><span><b class="ancn">${esc(b.opzioni[0].t)} = </b>${esc(a[0])}</span><span><b class="ancn">${esc(b.opzioni.at(-1).t)} = </b>${esc(a[1])}</span></div>`;
+        h += `<div class="ancmin"><b>${esc(b.opzioni[0].t)} = </b>${esc(a[0])}</div><div class="scale">${b.opzioni.map(o => `<label><span>${esc(o.t)}</span><input type="radio" name="${it.id}" value="${o.k}" ${ans[it.id] === o.k ? "checked" : ""}></label>`).join("")}</div><div class="anc"><span><b class="ancn">${esc(b.opzioni[0].t)} = </b>${esc(a[0])}</span><span><b class="ancn">${esc(b.opzioni.at(-1).t)} = </b>${esc(a[1])}</span></div>`;
       } else h += `<div class="opts">${b.opzioni.map(o => `<label><input type="radio" name="${it.id}" value="${o.k}" ${ans[it.id] === o.k ? "checked" : ""}> ${esc(o.t)}</label>`).join("")}</div>`;
       h += `</div>`;
     });
