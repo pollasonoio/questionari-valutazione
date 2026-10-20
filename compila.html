@@ -51,6 +51,7 @@ th,td{border-bottom:1px solid var(--line);padding:4px 6px;text-align:left;vertic
 .scale{display:flex;flex-wrap:wrap;gap:4px}
 .scale label{display:inline-flex;flex-direction:column;align-items:center;min-width:40px;border:1px solid var(--line);border-radius:6px;padding:2px 4px;cursor:pointer;font-size:13px}
 .scale input{margin:2px}
+.ancn{display:none}
 .anc{display:flex;justify-content:space-between;gap:12px;font-size:12px;color:var(--muted);max-width:640px}
 .opts label{display:block;padding:2px 0;cursor:pointer}
 .grid td,.grid th{text-align:center}
@@ -102,13 +103,17 @@ select{max-width:100%}
   .card{padding:12px}
   table.grid,table.grid tbody{display:block}
   table.grid tr:not([data-item]){display:none}
-  table.grid tr[data-item]{display:flex;flex-wrap:wrap;gap:6px;padding:10px 0;border-bottom:1px solid var(--line)}
+  table.grid tr[data-item]{display:flex;flex-direction:column;gap:4px;padding:10px 0;border-bottom:1px solid var(--line)}
   table.grid td{display:block;border:0;padding:0}
   table.grid td:first-child{flex:0 0 100%;font-weight:700}
-  .grid label{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);border-radius:6px;padding:6px 8px;cursor:pointer}
-  .grid .gt{display:inline;font-size:13.5px}
+  .grid label{display:flex;align-items:center;gap:8px;width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:6px;padding:10px 12px;cursor:pointer;text-align:left}
+  .grid .gt{display:inline;font-size:15px}
   .opts label{padding:7px 0}
-  .scale label{min-width:44px;padding:4px}
+  .scale{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:2px}
+  .scale label{position:relative;min-width:0;padding:10px 0;font-size:15px;font-weight:700;letter-spacing:-.3px}
+  .scale input{position:absolute;opacity:0;pointer-events:none}
+  .anc{flex-direction:column;gap:2px;font-size:13px}
+  .ancn{display:inline}
   button,a.btn{padding:10px 14px}
   .row label{flex:1 1 100%}
   .row input[type=text]{width:100%}
@@ -163,7 +168,7 @@ function formHtml(q, meta, ans) {
       else if (b.tipo === "check") h += `<div class="opts">${b.opzioni.map(o => `<label><input type="checkbox" name="${it.id}" value="${o.k}" ${(ans[it.id] || []).includes(o.k) ? "checked" : ""}> ${esc(o.t)}</label>`).join("")}</div>`;
       else if (b.layout === "riga") {
         const a = it.ancore || b.ancore || ["", ""];
-        h += `<div class="scale">${b.opzioni.map(o => `<label><span>${esc(o.t)}</span><input type="radio" name="${it.id}" value="${o.k}" ${ans[it.id] === o.k ? "checked" : ""}></label>`).join("")}</div><div class="anc"><span>${esc(a[0])}</span><span>${esc(a[1])}</span></div>`;
+        h += `<div class="scale">${b.opzioni.map(o => `<label><span>${esc(o.t)}</span><input type="radio" name="${it.id}" value="${o.k}" ${ans[it.id] === o.k ? "checked" : ""}></label>`).join("")}</div><div class="anc"><span><b class="ancn">${esc(b.opzioni[0].t)} = </b>${esc(a[0])}</span><span><b class="ancn">${esc(b.opzioni.at(-1).t)} = </b>${esc(a[1])}</span></div>`;
       } else h += `<div class="opts">${b.opzioni.map(o => `<label><input type="radio" name="${it.id}" value="${o.k}" ${ans[it.id] === o.k ? "checked" : ""}> ${esc(o.t)}</label>`).join("")}</div>`;
       h += `</div>`;
     });
